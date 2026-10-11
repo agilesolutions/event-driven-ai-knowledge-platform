@@ -4,13 +4,14 @@ What if every notebook could become searchable knowledge?
 This project demonstrates a **cloud-native, event-driven architecture** built with Spring Boot 4, Redpanda (Kafka), and Spring AI. 
 When a notebook is created, independent consumer services handle notifications and auditing, while the **Notebook Intelligence Service** transforms its content into enriched knowledge using AI-generated summaries, topics, keywords, and entities.
 
-Enriched documents are persisted in MongoDB and indexed in Qdrant, laying the foundation for **semantic search and intelligent knowledge discovery**. With Terraform-managed infrastructure and a modular microservices design, the project explores how modern Java applications can evolve from simple CRUD services into AI-enabled platforms.
+Enriched documents are persisted in MongoDB and indexed in Qdrant, laying the foundation for **semantic search and intelligent knowledge discovery** ([see Qdrant Vector Search + LLM (RAG) Architecture](docs/qdrant-vector-search.md)). With Terraform-managed infrastructure and a modular microservices design, the project explores how modern Java applications can evolve from simple CRUD services into AI-enabled platforms.
 
 **One event. Multiple consumers. From notebook creation to intelligent discovery.**
 
 <img title="Architecture" alt="Alt text" src="/docs/use-case-v2.png" width="800">
 
-## Terraform provision LGTM grafana stack, PostgreSQL database, traefik ingress controller
+## Terraform provision LGTM grafana stack, PostgreSQL and Qdrant vector store
+Application is design to Terraform provision infrastructure components and GitOps FluxCD deploy services to Docker for Destktop Kubernetes cluster.
 
 ```
 cd terraform/environment/grafana

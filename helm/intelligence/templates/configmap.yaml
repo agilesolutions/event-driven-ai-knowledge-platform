@@ -7,6 +7,7 @@ data:
   SPRING_PROFILES_ACTIVE: {{ .Values.config.SPRING_PROFILES_ACTIVE | quote }}
   MONGODB_HOST: {{ .Values.database.host | quote }}
   MONGODB_DATABASE: {{ .Values.database.name | quote }}
+  SPRING_AI_OPENAI_CHAT_MODEL: {{ .Values.model | quote }}
   QDRANT_HOST: {{ .Values.ai.qdrant.host | quote }}
   QDRANT_GRPC_PORT: {{ .Values.ai.qdrant.port | quote }}
   KAFKA_BOOTSTRAP_SERVERS: {{ .Values.kafka.bootstrapServers | quote }}
