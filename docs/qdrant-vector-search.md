@@ -1,5 +1,4 @@
 # Qdrant Vector Search + LLM (RAG) Architecture
-Qdrant Vector Search + LLM (RAG) Architecture
 This repository outlines the structural benefits and operational workflow of layering a Qdrant Vector Database on top of a Large Language Model (LLM) inside a Java Enterprise (Spring Boot / Spring AI) ecosystem.
 By utilizing Qdrant for semantic queries alongside an LLM, you implement a Retrieval-Augmented Generation (RAG) pipeline that transforms a generic generative AI model into a context-aware, secure corporate engine.
 ---
@@ -94,6 +93,6 @@ Spring AI provides an interception pattern called Advisors (similar to Spring AO
 ```
 
 1. **Intercepts the User Request:** Spring AI takes your user text (e.g., your legacy code snippet).
-2. **Embeds and Queries Qdrant:** It runs your text through the embedding model, performs a similarity search against Qdrant, and returns the most relevant chunks from migration-rules.md.
+2. **Embeds and Queries Qdrant:** It runs your text through the embedding model, performs a similarity search against Qdrant, and returns the most relevant chunks from notebook-seed.json.
 3. **Augments the Prompt:** It injects those chunks into a hidden system prompt template (e.g., "Context information is below... Given the context, answer the question...").
 4. **Invokes the LLM:** The fully enriched context is passed directly to the model for reasoning.
