@@ -27,6 +27,12 @@ database:
     username: intelligence
     password: intelligence
 
+ai:
+  quadrant:
+    host: qdrant.ai.svc.cluster.local
+    port: 6334
+  apiKey: xxxxxxx
+
 kafka:
   bootstrapServers: kafka.kafka-dev.svc.cluster.local:9093
   schemaRegistryUrl: http://kafka.kafka-dev.svc.cluster.local:8081

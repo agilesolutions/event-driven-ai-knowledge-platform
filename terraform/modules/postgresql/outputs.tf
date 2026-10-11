@@ -12,3 +12,8 @@ output "port" {
   description = "PostgreSQL port"
   value       = 5432
 }
+
+output "connection_host" {
+  description = "Internal PostgreSQL DNS name."
+  value       = "mongodb.${var.namespace}.svc.cluster.local"
+}

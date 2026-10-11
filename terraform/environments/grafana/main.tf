@@ -60,3 +60,18 @@ module "grafana_webhook_receiver" {
   namespace = "monitoring"
   name      = "grafana-webhook"
 }
+
+
+module "qdrant" {
+  source = "../../modules/qdrant"
+
+  namespace     = "ai"
+  release_name  = "qdrant"
+  chart_version = var.qdrant_chart_version
+
+  storage_size   = "5Gi"
+  cpu_request    = "250m"
+  memory_request = "512Mi"
+  cpu_limit      = "1"
+  memory_limit   = "1Gi"
+}

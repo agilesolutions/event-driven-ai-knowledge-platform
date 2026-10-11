@@ -8,6 +8,14 @@ spring:
           model: ${SPRING_AI_OPENAI_CHAT_MODEL:gpt-4.1-mini}
           temperature: 0.1
 
+    vectorstore:
+      qdrant:
+        host: ${QDRANT_HOST:qdrant.ai.svc.cluster.local}
+        port: ${QDRANT_GRPC_PORT:6334}
+        collection-name: notebook-intelligence
+        use-tls: false
+        initialize-schema: true
+
   mongodb:
     uri: mongodb://${MONGODB_USERNAME:intelligence}:${MONGODB_PASSWORD:intelligence}@${MONGODB_HOST:mongodb.database.svc.cluster.local}:${MONGODB_PORT:27017}/${MONGODB_DATABASE:notebook_intelligence}
     auto-index-creation: true

@@ -9,7 +9,7 @@ h2 = "2.1.214"
 avro = "1.12.1"
 kafka-avro-serializer = "8.3.2"
 avro-gradle-plugin = "1.9.1"
-spring-ai = "2.0.0"
+spring-ai = "2.0.1"
 embabel = "2.0.0-SNAPSHOT"
 
 [libraries]
@@ -44,6 +44,9 @@ otlp-appender = { module = "io.opentelemetry.instrumentation:opentelemetry-logba
 # Spring AI
 spring-ai-bom = { module = "org.springframework.ai:spring-ai-bom", version.ref = "spring-ai" }
 spring-ai-starter-model-openai = { module = "org.springframework.ai:spring-ai-starter-model-openai" }
+spring-ai-starter-vector-store-qdrant = { module = "org.springframework.ai:spring-ai-starter-vector-store-qdrant" }
+spring-ai-starter-vector-store-advisor = { module = "org.springframework.ai:spring-ai-vector-store-advisor", version.ref = "spring-ai" }
+
 
 
 

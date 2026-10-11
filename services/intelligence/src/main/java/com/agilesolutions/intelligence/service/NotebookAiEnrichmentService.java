@@ -3,6 +3,9 @@ package com.agilesolutions.intelligence.service;
 
 import com.agilesolutions.intelligence.domain.NotebookEnrichmentResult;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
+import org.springframework.ai.vectorstore.SearchRequest;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -11,8 +14,17 @@ public class NotebookAiEnrichmentService {
 
     private final ChatClient chatClient;
 
-    public NotebookAiEnrichmentService(ChatClient.Builder builder) {
-        this.chatClient = builder.build();
+    public NotebookAiEnrichmentService(ChatClient.Builder builder, VectorStore vectorStore) {
+        this.chatClient = builder
+                .defaultAdvisors(
+                        QuestionAnswerAdvisor.builder(vectorStore)
+                                .searchRequest(SearchRequest.builder()
+                                        .topK(4)                  // Pull top 4 relevant chunks
+                                        .similarityThreshold(0.7) // Only grab highly confident context matches
+                                        .build())
+                                .build()
+                )
+                .build();
     }
 
     public NotebookEnrichmentResult enrich(

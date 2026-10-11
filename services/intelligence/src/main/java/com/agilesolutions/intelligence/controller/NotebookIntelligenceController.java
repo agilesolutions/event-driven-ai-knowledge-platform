@@ -10,6 +10,7 @@ import com.agilesolutions.notebook.api.NotebookIntelligenceApi;
 import com.agilesolutions.notebook.api.model.ExtractedEntity;
 import com.agilesolutions.notebook.api.model.IntelligenceSourceEvent;
 import com.agilesolutions.notebook.api.model.NotebookIntelligence;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,15 +21,12 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequiredArgsConstructor
 public class NotebookIntelligenceController
         implements NotebookIntelligenceApi {
 
     private final NotebookIntelligenceService service;
 
-    public NotebookIntelligenceController(
-            NotebookIntelligenceService service) {
-        this.service = service;
-    }
 
     @Override
     public ResponseEntity<List<NotebookIntelligence>>
