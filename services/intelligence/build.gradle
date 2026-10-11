@@ -54,6 +54,7 @@ dependencies {
 	// OpenAI
 	implementation libs.spring.ai.starter.model.openai
 	implementation libs.embabel.agent.starter
+	implementation libs.spring.ai.starter.vector.store.qdrant
 
 	// Tests
 	testImplementation libs.spring.otlp.test

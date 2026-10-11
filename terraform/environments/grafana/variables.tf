@@ -56,3 +56,8 @@ variable "mongodb_password" {
   type        = string
   sensitive   = true
 }
+
+variable "qdrant_chart_version" {
+  description = "Verified Qdrant Helm chart version."
+  type        = string
+}
