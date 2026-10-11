@@ -1,0 +1,25 @@
+[
+  {
+    "notebookId": "notebook-001",
+    "title": "Legacy Architecture Analysis",
+    "description": "Deep-dive documentation analyzing modular boundaries in the legacy system architecture.",
+    "status": "COMPLETED",
+    "topics": ["architecture", "legacy", "migration"],
+    "keywords": ["monolith", "database", "coupling"],
+    "summary": "Monolithic system utilizing shared database clusters with tight coupling across bounded contexts.",
+    "entities": [
+      { "name": "MongoDB Cluster", "type": "DATABASE" }
+    ],
+    "source": {
+      "eventId": "evt-101",
+      "eventType": "NotebookCreated",
+      "topic": "legacy-notebooks",
+      "partition": 0,
+      "offset": 1250,
+      "schemaVersion": 1
+    },
+    "createdAt": "2026-10-11T12:00:00Z",
+    "updatedAt": "2026-10-11T12:30:00Z",
+    "enrichedAt": "2026-10-11T12:31:00Z"
+  }
+]
