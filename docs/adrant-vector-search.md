@@ -72,3 +72,28 @@ terraform plan
 terraform apply
 ```
 
+## Qdrant vector store searches
+Spring AI does not automatically search the Qdrant vector store by default just because data was loaded into it. It will only perform a vector search if you explicitly wire a Retrieval-Augmented Generation (RAG) component into your execution pipeline.
+
+If you invoke a standard Spring AI ChatModel directly, it remains completely unaware of your Qdrant context and will reply based purely on its baseline training data.
+
+To make the search automatic before the LLM reasons, you must use one of Spring AI's built-in RAG Advisor workflows.
+
+## How to automate it using Spring AI Advisors
+Spring AI provides an interception pattern called Advisors (similar to Spring AOP / Around advice). By attaching a QuestionAnswerAdvisor to your Chat Client, Spring AI will automatically intercept the prompt, query Qdrant, format the rules as context, and pass everything to the LLM behind the scenes.
+
+**What happens under the hood when you use an Advisor?**
+
+```
+[Your Prompt] ──> (Interception) ──> Query Qdrant for Vectors 
+                                             │
+                                     [Retrieved Context] (e.g. JAVA / CLOUD NATIVE rules)
+                                             │
+                                             ▼
+[Final Prompt] <── [System Prompt + Context + Your Prompt] ──> Sent to LLM ──> Optimized Response
+```
+
+1. **Intercepts the User Request:** Spring AI takes your user text (e.g., your legacy code snippet).
+2. **Embeds and Queries Qdrant:** It runs your text through the embedding model, performs a similarity search against Qdrant, and returns the most relevant chunks from migration-rules.md.
+3. **Augments the Prompt:** It injects those chunks into a hidden system prompt template (e.g., "Context information is below... Given the context, answer the question...").
+4. **Invokes the LLM:** The fully enriched context is passed directly to the model for reasoning.
