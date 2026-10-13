@@ -1,164 +1,133 @@
-# From Events to Intelligence: AI-Powered Notebook Architecture
-What if every notebook could become searchable knowledge?
+# Event-Driven AI Knowledge Platform
 
-This project demonstrates a **cloud-native, event-driven architecture** built with Spring Boot 4, Redpanda (Kafka), and Spring AI. 
-When a notebook is created, independent consumer services handle notifications and auditing, while the **Notebook Intelligence Service** transforms its content into enriched knowledge using AI-generated summaries, topics, keywords, and entities.
+### From business events to intelligent, searchable knowledge.
 
-Enriched documents are persisted in MongoDB and indexed in Qdrant, laying the foundation for **semantic search and intelligent knowledge discovery** ([see Qdrant Vector Search + LLM (RAG) Architecture](docs/qdrant-vector-search.md)). With Terraform-managed infrastructure and a modular microservices design, the project explores how modern Java applications can evolve from simple CRUD services into AI-enabled platforms.
+**What if every notebook could become a source of searchable knowledge?**
 
-**One event. Multiple consumers. From notebook creation to intelligent discovery.**
+This project demonstrates how a conventional Spring Boot application can evolve into an **AI-enabled, event-driven microservices platform**. A single `NotebookCreated` event triggers independent business processes for notifications, auditing, and AI-powered content enrichment—without tightly coupling the services to one another.
 
-<img title="Architecture" alt="Alt text" src="/docs/use-case-v2.png" width="800">
+Built with **Java, Spring Boot 4, Redpanda (Kafka), Spring AI, MongoDB, PostgreSQL, Qdrant, and Terraform**, the platform brings together modern application development, asynchronous messaging, generative AI, vector search, GitOps, and observability in one hands-on engineering project.
 
-## Terraform provision LGTM grafana stack, PostgreSQL and Qdrant vector store
-Application is design to Terraform provision infrastructure components and GitOps FluxCD deploy services to Docker for Destktop Kubernetes cluster.
-
-```
-cd terraform/environment/grafana
-
-terraform init
-
-terraform validate
-
-terraform plan
-
-terraform apply -auto-approve
-```
-
-## Build, bootstrap FluxCD and GitOps deploy notebook application
-
-```
-gradlew jibDockerBuild
-
-flux bootstrap github --owner=agilesolutions --repository=AI-agentic-migration-overheid --branch=master --path=./fluxcd --components-extra=image-reflector-controller,image-automation-controller --personal
-```
-
-## Run and Test
-
-```
-kubectl port-forward svc/notebook 8080:8080 -n services
+**One event. Independent services. AI-enriched knowledge. Cloud-native delivery.**
 
 
-http://localhost:8080/swagger-ui.html
-```
+## Architecture at a glance
 
-## Observe MongoDB document changes with MongoDB Compass
+<img title="Architecture" alt="Alt text" src="/docs/images/architecture.png" width="800">
 
-``` 
-kubectl get pods -n database
+The architecture separates event production, business processing, AI enrichment, persistence, and vector indexing into distinct responsibilities. This makes the solution easier to evolve, test, observe, and extend.
 
-kubectl port-forward svc/mongodb 27017:27017 -n database
+### The end-to-end journey
 
-# connect to MongoDB Compass with the following connection string:
-mongodb://localhost:27017
+1. **Create** — The Notebook Service creates a notebook and publishes a `NotebookCreated` Avro event to the Redpanda topic `notebook.events`.
+2. **Distribute** — Independent Kafka consumer groups receive the event, allowing notification, audit, and intelligence processing to run separately.
+3. **Notify** — The Notification Service handles the notification workflow.
+4. **Audit** — The Audit Service consumes the event and records the relevant audit information on a PostgreSql database.
+5. **Enrich** — The Notebook Intelligence Service uses Spring AI to generate a summary and extract topics, keywords, and entities.
+6. **Persist** — MongoDB stores the enriched notebook document.
+7. **Index** — Spring AI embeddings and Qdrant provide the foundation for semantic similarity search.
+8. **Observe** — OpenTelemetry and Grafana's alloy central collector and observability stack help investigate application behaviour, logs, metrics, traces, and alerts.
 
-```
+---
 
-## Grafana observe
+## From notebook content to AI-powered knowledge
 
-```
-kubectl port-forward svc/kube-prometheus-stack-grafana  3000:80 -n monitoring
+The Intelligence Service is the centrepiece of this project. Instead of treating a notebook as nothing more than a record with a title and description, it transforms the content into a richer representation that can support discovery and downstream AI workflows.
+
+| Capability                    | Technology                | Purpose                                                       |
+| ----------------------------- | ------------------------- | ------------------------------------------------------------- |
+| Asynchronous event processing | Redpanda / Kafka          | Decouple producers from consumers                             |
+| Structured AI enrichment      | Spring AI                 | Generate summaries and extract topics, keywords, and entities |
+| Document persistence          | MongoDB                   | Store the enriched notebook representation                    |
+| Embedding generation          | Spring AI embedding model | Represent content as vectors                                  |
+| Vector indexing               | Qdrant                    | Enable semantic similarity search                             |
+| Agentic evolution             | Embabel                   | Provide a potential foundation for agent-driven workflows     |
+
+The design deliberately separates **AI enrichment from vector indexing**. If indexing fails after a document has been persisted, the stored document can be re-indexed without repeating the AI enrichment step.
+
+MongoDB remains the canonical document store; Qdrant serves as the vector index. Because they are separate systems, reliable recovery and reconciliation between them are important engineering concerns.
+
+---
+
+## Engineering beyond the application code
+
+This repository is also a demonstration of the platform engineering practices required to run modern Java services.
+
+* **Infrastructure as Code** — Terraform provisions supporting infrastructure such as the messaging and data services, alongside observability components.
+* **GitOps delivery** — FluxCD manages Kubernetes deployments from version-controlled configuration.
+* **Cloud-native packaging** — Helm charts and Kubernetes resources support repeatable deployment.
+* **Observability** — OpenTelemetry instrumentation and Grafana Alloy feed telemetry into the relevant observability backends.
+* **Operational insight** — Grafana dashboards and alerting help surface application errors and investigate service behaviour.
+* **Automated testing** — Unit tests and integration tests can verify processing behaviour, persistence, and failure recovery.
+
+The aim is not just to make the happy path work. It is to demonstrate how application architecture, infrastructure, delivery, and operations fit together.
+
+---
+
+## 🛠️ Technology stack
+
+**Application and messaging**
+
+Java · Spring Boot 4 · Spring AI · Redpanda · Apache Kafka · Avro
+
+**Data and AI**
+
+MongoDB · Qdrant · Embedding models · Semantic search
+
+**Platform and delivery**
+
+Docker · Kubernetes · Helm · Terraform · FluxCD
+
+**Observability**
+
+OpenTelemetry · Grafana Alloy · Grafana · Prometheus-compatible metrics · Loki · Tempo
+
+---
+
+## What this project demonstrates
+
+* Designing loosely coupled microservices around domain events.
+* Building asynchronous Kafka producers and independent consumers.
+* Integrating generative AI into a Java/Spring application.
+* Persisting structured AI enrichment and indexing embeddings.
+* Separating operational document storage from vector search.
+* Testing failure scenarios and designing recovery paths.
+* Provisioning infrastructure as code and deploying with GitOps.
+* Instrumenting services for logs, metrics, traces, dashboards, and alerts.
+
+## The bigger picture
+
+This platform is an evolving foundation for intelligent knowledge discovery. The architecture creates room for semantic retrieval, retrieval-augmented generation (RAG), and agentic workflows without requiring the core business services to become tightly coupled to a particular AI implementation.
+
+**The goal: demonstrate how established enterprise Java engineering practices can be combined with modern AI capabilities to build systems that are modular, observable, and ready to evolve.**
+
+---
 
 
-http://localhost:3000
+<img src="docs/images/explore-implementation.png" alt="Explore the implementation of the Event-Driven AI Knowledge Platform, from microservices and Kafka events through AI enrichment, persistence, infrastructure and observability" width="width=200"/>
 
-```
+Explore how the platform connects **event-driven microservices, AI-powered enrichment, data persistence, and cloud-native operations** into one cohesive solution.
 
-## Grafana alerts
-The Loki query for the alert is:
+The repository is organized around the main architectural responsibilities, making it easier to follow an event from its creation to its transformation into enriched, searchable knowledge.
 
-```
-sum(
-count_over_time(
-{namespace="notebook"} |= "ERROR" [5m]
-)
-) > 0
+| Area                             | What to explore                                                                                 |
+| -------------------------------- | ----------------------------------------------------------------------------------------------- |
+| 📓 **Notebook Service**          | Create notebooks and publish `NotebookCreated` events using Avro.                               |
+| 📨 **Event Streaming**           | Use Redpanda and independent Kafka consumer groups to decouple services.                        |
+| 🔔 **Notification Service**      | React to notebook events and handle notification processing.                                    |
+| 📋 **Audit Service**             | Consume events and record audit information.                                                    |
+| 🧠 **Intelligence Service**      | Use Spring AI to enrich notebook content with summaries, topics, keywords, and entities.        |
+| 🍃 **Persistence & Search**      | Store enriched documents in MongoDB and index embeddings in Qdrant.                             |
+| ☸️ **Infrastructure & Delivery** | Provision infrastructure with Terraform and manage Kubernetes deployments with Helm and FluxCD. |
+| 📊 **Observability**             | Explore telemetry collection, dashboards, logs, metrics, traces, and alerting.                  |
 
-```
-This means that if there are any log entries in the last 5 minutes that contain the string "ERROR" in the "notebook" namespace, the alert will fire.
+### Follow the journey
 
-```
-kubectl port-forward svc/grafana-webhook 8080:8080 -n monitoring
+**Create → Publish → Consume → Enrich → Persist → Index → Discover**
 
-kubectl logs -n monitoring deployment/grafana-webhook -f
-```
-The logs will show the alerts received from Grafana and the actions taken by the webhook.
+Start with the Notebook Service, follow the `NotebookCreated` event through Redpanda, and then explore how the independent consumers process it. Continue into the Intelligence Service to see how AI enrichment feeds MongoDB persistence and Qdrant indexing.
 
-You will see something like this in the logs:
+Finally, explore the infrastructure and observability components that support deployment and operation of the platform.
 
-```
-{
-  "receiver": "local-webhook",
-  "status": "firing",
-  "alerts": [
-    {
-      "status": "firing",
-      "labels": {
-        "alertname": "NotebookErrorLogs",
-        "namespace": "notebook"
-      },
-      "annotations": {
-        "summary": "Notebook application error"
-      }
-    }
-  ]
-}
-```
-
-## Enabling Grafana Service Graph
-Tempo is a distributed tracing backend that can be used to visualize service graphs in Grafana. To enable service graphs, you need to configure Tempo to receive traces from your application and then configure Grafana to display the service graph.
-
-```
-                    OTLP
-Notebook ─────────────────────► Tempo
-   │                              │
-   │                              │ service-graphs
-   │                              ▼
-   │                         Metrics Generator
-   │                              │
-   │                              │ remote_write
-   │                              ▼
-   │                         Prometheus
-   │                              │
-   │                              ▼
-   └──────────────────────────► Grafana
-                                  │
-                                  ▼
-                            Service Graph
-```
-
-## Observability met SpringBoot 4 OTEL en Grafana Alloy collector
-
-```
-Spring Boot 4 application
-        │
-        │ OTLP/gRPC or OTLP/HTTP
-        ▼
-┌──────────────────────┐
-│    Grafana Alloy     │
-│                      │
-│ OTLP receiver        │
-│   ├── traces         │
-│   ├── metrics        │
-│   └── logs           │
-└──────────┬───────────┘
-           │
-           ├── traces ──► Tempo
-           ├── metrics ─► Prometheus/Mimir
-           └── logs ────► Loki
-```
-
-### Grafana dashboard drilldown
-
-```
-kubectl port-forward svc/kube-prometheus-stack-grafana  3000:80 -n monitoring
-```
-
-## GITOPS - manage applicaties met FluxCD.
-[Central idea is to show how to use GitOps](docs/gitops-strategie.md) (FluxCD) to manage the deployment of a microservices application on Kubernetes.
-1. How to bootstrap FluxCD in your Kubernetes cluster:
-```
-flux bootstrap github --owner=agilesolutions --repository=AI-agentic-migration-overheid --branch=master --path=./fluxcd --components-extra=image-reflector-controller,image-automation-controller --personal
-```
-Read full instructions in [docus/fluxcd.md](docs/fluxcd.md)
+The objective is to demonstrate not just individual technologies, but how they work together to deliver a modular, observable, and extensible AI-enabled application.
 
