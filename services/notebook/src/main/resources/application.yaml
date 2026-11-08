@@ -38,26 +38,26 @@ app:
     topics:
       notebook-events: notebook.events
 
-  management:
+management:
+  tracing:
+    sampling:
+      probability: ${OTEL_TRACES_SAMPLER_ARG:1.0}
+
+  opentelemetry:
+    logging:
+      export:
+        otlp:
+          endpoint: ${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:http://alloy.monitoring.svc.cluster.local:4318/v1/logs}
     tracing:
-      sampling:
-        probability: ${OTEL_TRACES_SAMPLER_ARG:1.0}
+      export:
+        # Note: OpenTelemetry native tracing uses 'endpoint' under 'opentelemetry'
+        endpoint: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:http://alloy.monitoring.svc.cluster.local:4318/v1/traces}
 
-    opentelemetry:
-      logging:
-        export:
-          otlp:
-            endpoint: ${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:http://alloy.monitoring.svc.cluster.local:4318/v1/logs}
-      tracing:
-        export:
-          # Note: OpenTelemetry native tracing uses 'endpoint' under 'opentelemetry'
-          endpoint: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:http://alloy.monitoring.svc.cluster.local:4318/v1/traces}
-
-    otlp:
-      metrics:
-        export:
-          # Crucial: Use the correct Micrometer target property path
-          url: ${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:http://alloy.monitoring.svc.cluster.local:4318/v1/metrics}
+  otlp:
+    metrics:
+      export:
+        # Crucial: Use the correct Micrometer target property path
+        url: ${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:http://alloy.monitoring.svc.cluster.local:4318/v1/metrics}
 
 server:
   port: ${SERVER_PORT:8080}
@@ -82,8 +82,3 @@ logging:
     org.springframework.boot.autoconfigure.flyway: DEBUG
     org.springframework.boot.jdbc.autoconfigure: DEBUG
     org.springframework.boot.hibernate.autoconfigure: DEBUG
-
-management:
-  oltp:
-    metrics:
-      enabled: false
